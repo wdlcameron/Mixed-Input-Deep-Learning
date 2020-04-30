@@ -15,7 +15,8 @@ from torchvision import transforms
 class Dataset():
     DROP_WARNING = 0.9
 
-    def __init__(self, df_path, img_col, cont_cols, cat_cols, target_col, image_path, suffix = '.jpg', transforms = None):
+    def __init__(self, df_path, img_col, cont_cols, cat_cols, target_col, image_path, suffix = '.jpg',
+                 transforms = None, indices = None):
         self.df_path = df_path
         self.img_col, self.cont_cols, self.cat_cols = img_col, cont_cols, cat_cols
         self.target_col = target_col
@@ -25,6 +26,8 @@ class Dataset():
 
         #read in the dataframe
         self.df = pd.read_csv(df_path)
+        if indices is not None: self.df = self.df.loc[indices, :]
+        self.df.reset_index(drop=True, inplace = True)
         self.df = self.clean_dataframe(self.df)
 
     def __len__(self):
